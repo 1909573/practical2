@@ -8,18 +8,40 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import com.example.practical2.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityMainBinding
+    private val myName: MyName = MyName("Aleks Haecky")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button1 : Button = findViewById(R.id.done_button)
-        button1.setOnClickListener{ buttonClicked(button1)}
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.myName = myName
+        //val button1 : Button = binding.doneButton
+        //button1.setOnClickListener{ buttonClicked(button1)}
+
+        binding.doneButton.setOnClickListener {
+            addNickname(it)
+        }
+
     }
 
-    private fun buttonClicked(view : View){
+    private fun addNickname(view: View){
+        binding.apply {
+            myName?.nickname = nickname.text.toString()
+            invalidateAll()
+            nickname.visibility = View.GONE
+            doneButton.visibility = View.GONE
+            nicknameText.visibility = View.VISIBLE
+        }
+        val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /*private fun buttonClicked(view : View){
         val editText = findViewById<EditText>(R.id.nickname)
         val nicknameView = findViewById<TextView>(R.id.nickname_text)
 
@@ -33,5 +55,5 @@ class MainActivity : AppCompatActivity() {
 
         val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+    }*/
 }
